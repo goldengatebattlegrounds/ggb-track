@@ -108,10 +108,9 @@ async function scrapePlayerProfile(targetName) {
       // Store — amber pill badge: "🏠 King Kong Comics & Games"
       const store = document.querySelector('.bg-amber-100')?.textContent.trim() ?? null;
 
-      // Faction / class — the rounded-full border pill inside the flex-wrap div
-      // e.g. "Generic", "Brute", "Wizard" etc.
-      const faction = document.querySelector('.flex.flex-wrap.gap-2 span.rounded-full')
-        ?.textContent.trim() ?? null;
+      // Faction / class tags — all pills inside the flex-wrap div
+      const factions = Array.from(document.querySelectorAll('.flex.flex-wrap.gap-2 span.rounded-full'))
+        .map(el => el.textContent.trim()).filter(Boolean);
 
       // Lifetime stats — three-column grid, each card has p.text-3xl + p.text-sm
       const stats = { totalPoints: null, ranking: null, events: null };
@@ -124,7 +123,7 @@ async function scrapePlayerProfile(targetName) {
         else if (label.includes('event')) stats.events     = value;
       });
 
-      return { name, avatar, banner, store, faction, ...stats };
+      return { name, avatar, banner, store, factions, ...stats };
     });
 
     return { ...profile, foundName: clickedName };

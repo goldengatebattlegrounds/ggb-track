@@ -3,9 +3,8 @@ const { LEADERBOARD_URL } = require('./scraper');
 
 const COLOR_GOLD = 0xf5a623;
 const COLOR_BLUE = 0x4a90d9;
-const RANK_EMOJI = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
-function progressBar(pts, maxPts, length = 22) {
+function progressBar(pts, maxPts, length = 20) {
   if (!maxPts) return '░'.repeat(length);
   const filled = Math.round((pts / maxPts) * length);
   return '█'.repeat(filled) + '░'.repeat(length - filled);
@@ -26,10 +25,10 @@ function buildTop8Embed(players, season, count) {
   const maxPts = top8[0]?.points ?? 1;
 
   const lines = top8.map(p => {
-    const badge = RANK_EMOJI[p.rank] ?? `**${p.rank}.**`;
-    const pts   = p.points != null ? `**${p.points}** pts` : '—';
-    const bar   = progressBar(p.points ?? 0, maxPts);
-    return `${badge}  **${p.name}** · ${pts}\n\`${bar}\``;
+    const rank = `**${p.rank}.**`;
+    const pts  = p.points != null ? `**${p.points}** pts` : '—';
+    const bar  = progressBar(p.points ?? 0, maxPts);
+    return `${rank} **${p.name}** · ${pts}\n${bar}`;
   });
 
   const subtitle = [count, 'Updated Monday'].filter(Boolean).join(' • ');
@@ -54,10 +53,10 @@ function buildProfileEmbed(leaderboardPlayer, profile, allPlayers, season) {
 
   const displayName = profile?.foundName ?? leaderboardPlayer.name;
 
-  // Description: store + faction badges
+  // Description: store + faction tags
   const descParts = [
-    profile?.store   ? profile.store            : null,
-    profile?.faction ? `⚔️ ${profile.faction}` : null,
+    profile?.store ?? null,
+    ...(profile?.factions?.length ? profile.factions.map(f => `⚔️ ${f}`) : []),
   ].filter(Boolean);
 
   // Season stats line
@@ -87,7 +86,7 @@ function buildProfileEmbed(leaderboardPlayer, profile, allPlayers, season) {
     embed.addFields({ name: 'Lifetime', value: lifetimeParts.join('  ·  '), inline: false });
   }
 
-  embed.setFooter({ text: `GGB Track • Lifetime • ${LEADERBOARD_URL}` }).setTimestamp();
+  embed.setFooter({ text: `GGB Track • ${LEADERBOARD_URL}` }).setTimestamp();
   return embed;
 }
 
