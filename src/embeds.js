@@ -61,26 +61,21 @@ function buildProfileEmbed(leaderboardPlayer, profile, allPlayers, season) {
 
   const embed = new EmbedBuilder()
     .setColor(isInTop8 ? COLOR_GOLD : COLOR_BLUE)
-    .setAuthor(
-      profile?.avatar
-        ? { name: displayName, iconURL: profile.avatar }
-        : { name: displayName }
-    );
+    .setTitle(displayName);
 
   if (profile?.avatar) embed.setThumbnail(profile.avatar);
   if (descParts.length) embed.setDescription(descParts.join('  ·  '));
 
   embed.addFields({ name: season ?? 'Season', value: seasonStats, inline: false });
 
-  const lifetimeFields = [
-    profile?.totalPoints != null ? { name: 'Total Points', value: `**${profile.totalPoints}**`, inline: true } : null,
-    profile?.ranking             ? { name: 'Ranking',      value: `**${profile.ranking}**`,     inline: true } : null,
-    profile?.events   != null    ? { name: 'Events',       value: `**${profile.events}**`,       inline: true } : null,
+  const lifetimeParts = [
+    profile?.totalPoints != null ? `**${profile.totalPoints}** Total Points` : null,
+    profile?.ranking             ? `**${profile.ranking}** Ranking`          : null,
+    profile?.events   != null    ? `**${profile.events}** Events`            : null,
   ].filter(Boolean);
 
-  if (lifetimeFields.length) {
-    embed.addFields({ name: 'Lifetime', value: '\u200b', inline: false });
-    embed.addFields(...lifetimeFields);
+  if (lifetimeParts.length) {
+    embed.addFields({ name: 'Lifetime', value: lifetimeParts.join('  ·  '), inline: false });
   }
 
   embed.setFooter({ text: `GGB Track • ${LEADERBOARD_URL}` }).setTimestamp();
