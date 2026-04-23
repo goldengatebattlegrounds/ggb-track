@@ -121,12 +121,21 @@ async function fetchProfile(nameQuery) {
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
+const HIDDEN_PLAYERS = (process.env.HIDDEN_PLAYERS || '')
+  .split(',').map(n => n.trim().toLowerCase()).filter(Boolean);
+
 async function getLeaderboard(forceRefresh = false) {
   const stale = Date.now() - leaderboardCache.fetchedAt > CACHE_TTL;
   if (!forceRefresh && leaderboardCache.data && !stale) return leaderboardCache;
 
   console.log('[firebase] Fetching leaderboard…');
-  const { players, season, count } = await fetchLeaderboard();
+  const { players: raw, season, count } = await fetchLeaderboard();
+
+  // Filter hidden players and re-rank
+  const players = raw
+    .filter(p => !HIDDEN_PLAYERS.includes(p.name.toLowerCase()))
+    .map((p, i) => ({ ...p, rank: i + 1 }));
+
   leaderboardCache = { data: players, season, count, fetchedAt: Date.now() };
   console.log(`[firebase] Cached ${players.length} players (${season}).`);
   return leaderboardCache;
