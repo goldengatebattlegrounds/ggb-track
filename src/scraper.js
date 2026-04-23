@@ -88,9 +88,13 @@ async function scrapePlayerProfile(targetName) {
 
     if (!clickedName) return null;
 
-    // Wait for the profile page to fully load
-    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
-    await page.waitForSelector('h1', { timeout: 30000 });
+    // React Router uses client-side navigation (no real page load),
+    // so waitForNavigation never fires. Poll for the URL change instead.
+    await page.waitForFunction(
+      () => window.location.pathname.includes('/players/'),
+      { timeout: 30000 }
+    );
+    await page.waitForSelector('h1.text-2xl', { timeout: 30000 });
 
     const profile = await page.evaluate(() => {
       // Name
