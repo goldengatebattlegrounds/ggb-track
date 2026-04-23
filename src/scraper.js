@@ -103,10 +103,7 @@ async function scrapePlayerProfile(targetName) {
       // Avatar — inside the w-24 h-24 rounded container; src is already absolute
       const avatar = document.querySelector('.w-24.h-24 img')?.src ?? null;
 
-      // Banner image — extracted from inline style on the h-36 div
-      const bannerStyle = document.querySelector('.h-36[style*="background-image"]')?.style.backgroundImage ?? '';
-      const bannerMatch = bannerStyle.match(/url\(["']?([^"')]+)["']?\)/);
-      const banner = bannerMatch ? bannerMatch[1] : null;
+      const banner = null;
 
       // Store — amber pill badge: "🏠 King Kong Comics & Games"
       const store = document.querySelector('.bg-amber-100')?.textContent.trim() ?? null;

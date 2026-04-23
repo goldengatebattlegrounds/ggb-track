@@ -79,7 +79,6 @@ function buildProfileEmbed(leaderboardPlayer, profile, allPlayers, season) {
     .setTitle(displayName);
 
   if (profile?.avatar) embed.setThumbnail(profile.avatar);
-  if (profile?.banner) embed.setImage(profile.banner);
   if (descParts.length) embed.setDescription(descParts.join('  ·  '));
 
   embed.addFields({ name: season ?? 'Season', value: seasonStats, inline: false });
