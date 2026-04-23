@@ -89,8 +89,8 @@ async function scrapePlayerProfile(targetName) {
     if (!clickedName) return null;
 
     // Wait for the profile page to fully load
-    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 10000 });
-    await page.waitForSelector('h1', { timeout: 10000 });
+    await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
+    await page.waitForSelector('h1', { timeout: 30000 });
 
     const profile = await page.evaluate(() => {
       // Name
