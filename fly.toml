@@ -1,0 +1,11 @@
+# fly.toml app configuration file generated for ggb-track on 2026-04-23T13:42:02-07:00
+
+app = 'ggb-track'
+primary_region = 'sjc'
+
+[build]
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
