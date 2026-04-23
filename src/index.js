@@ -1,13 +1,14 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const ggbCommand = require('./commands/ggb');
+const ggbCommand         = require('./commands/ggb');
+const leaderboardCommand = require('./commands/leaderboard');
 const { startScheduler } = require('./scheduler');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-// Register commands on the client
 client.commands = new Collection();
 client.commands.set(ggbCommand.data.name, ggbCommand);
+client.commands.set(leaderboardCommand.data.name, leaderboardCommand);
 
 client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);

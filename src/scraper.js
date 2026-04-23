@@ -96,7 +96,6 @@ async function fetchProfile(nameQuery) {
     const factions = [
       d.favorite_class  ? toLabel(d.favorite_class)  : null,
       d.favorite_format ? toLabel(d.favorite_format) : null,
-      d.fabrary_url     ? 'Fabrary'                  : null,
     ].filter(Boolean);
 
     // Total events

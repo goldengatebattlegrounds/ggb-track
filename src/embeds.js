@@ -10,13 +10,6 @@ function progressBar(pts, maxPts, length = 20) {
   return '█'.repeat(filled) + '░'.repeat(length - filled);
 }
 
-function formatWeekOf() {
-  return new Date().toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric',
-    timeZone: 'America/Los_Angeles',
-  });
-}
-
 // ---------------------------------------------------------------------------
 // Weekly top-8 embed
 // ---------------------------------------------------------------------------
@@ -53,37 +46,41 @@ function buildProfileEmbed(leaderboardPlayer, profile, allPlayers, season) {
 
   const displayName = profile?.foundName ?? leaderboardPlayer.name;
 
-  // Description: store + faction tags
+  // Description: store + factions
   const descParts = [
     profile?.store ?? null,
     ...(profile?.factions?.length ? profile.factions.map(f => `⚔️ ${f}`) : []),
   ].filter(Boolean);
 
-  // Season stats line
+  // Season stats
   const seasonStats = leaderboardPlayer.points != null
     ? isInTop8
       ? `Rank **#${leaderboardPlayer.rank}** · **${leaderboardPlayer.points} pts** · 🏆 Top 8`
       : `Rank **#${leaderboardPlayer.rank}** · **${leaderboardPlayer.points} pts** · ${ptsNeeded} Battle Point${ptsNeeded !== 1 ? 's' : ''} from top 8`
     : `Rank **#${leaderboardPlayer.rank}**`;
 
-  // Lifetime stats line
-  const lifetimeParts = [
-    profile?.totalPoints ? `**${profile.totalPoints}** Total Points` : null,
-    profile?.ranking     ? `**${profile.ranking}** Ranking`          : null,
-    profile?.events      ? `**${profile.events}** Events`            : null,
-  ].filter(Boolean);
-
   const embed = new EmbedBuilder()
     .setColor(isInTop8 ? COLOR_GOLD : COLOR_BLUE)
-    .setTitle(displayName);
+    .setAuthor(
+      profile?.avatar
+        ? { name: displayName, iconURL: profile.avatar }
+        : { name: displayName }
+    );
 
   if (profile?.avatar) embed.setThumbnail(profile.avatar);
   if (descParts.length) embed.setDescription(descParts.join('  ·  '));
 
   embed.addFields({ name: season ?? 'Season', value: seasonStats, inline: false });
 
-  if (lifetimeParts.length) {
-    embed.addFields({ name: 'Lifetime', value: lifetimeParts.join('  ·  '), inline: false });
+  const lifetimeFields = [
+    profile?.totalPoints != null ? { name: 'Total Points', value: `**${profile.totalPoints}**`, inline: true } : null,
+    profile?.ranking             ? { name: 'Ranking',      value: `**${profile.ranking}**`,     inline: true } : null,
+    profile?.events   != null    ? { name: 'Events',       value: `**${profile.events}**`,       inline: true } : null,
+  ].filter(Boolean);
+
+  if (lifetimeFields.length) {
+    embed.addFields({ name: 'Lifetime', value: '\u200b', inline: false });
+    embed.addFields(...lifetimeFields);
   }
 
   embed.setFooter({ text: `GGB Track • ${LEADERBOARD_URL}` }).setTimestamp();

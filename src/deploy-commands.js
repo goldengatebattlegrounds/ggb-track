@@ -4,9 +4,10 @@
  */
 require('dotenv').config();
 const { REST, Routes } = require('discord.js');
-const ggb = require('./commands/ggb');
+const ggb         = require('./commands/ggb');
+const leaderboard = require('./commands/leaderboard');
 
-const commands = [ggb.data.toJSON()];
+const commands = [ggb.data.toJSON(), leaderboard.data.toJSON()];
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
