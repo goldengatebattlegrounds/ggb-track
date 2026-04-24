@@ -7,7 +7,8 @@ const DB_URL            = 'https://ggb-leaderboard-default-rtdb.firebaseio.com';
 const CACHE_TTL         = parseInt(process.env.CACHE_TTL_MS)         || 5  * 60 * 1000;
 const PROFILE_CACHE_TTL = parseInt(process.env.PROFILE_CACHE_TTL_MS) || 10 * 60 * 1000;
 
-let leaderboardCache = { data: null, season: null, count: '', fetchedAt: 0 };
+let leaderboardCache    = { data: null, season: null, count: '', fetchedAt: 0 };
+let rawLeaderboardCache = { data: null, fetchedAt: 0 };
 const profileCache   = new Map();
 
 let _db = null;
@@ -131,7 +132,9 @@ async function getLeaderboard(forceRefresh = false) {
   console.log('[firebase] Fetching leaderboard…');
   const { players: raw, season, count } = await fetchLeaderboard();
 
-  // Filter hidden players and re-rank
+  rawLeaderboardCache = { data: raw, fetchedAt: Date.now() };
+
+  // Filter hidden players and re-rank for display
   const players = raw
     .filter(p => !HIDDEN_PLAYERS.includes(p.name.toLowerCase()))
     .map((p, i) => ({ ...p, rank: i + 1 }));
@@ -142,7 +145,8 @@ async function getLeaderboard(forceRefresh = false) {
 }
 
 async function getPlayer(name) {
-  const { data: players } = await getLeaderboard();
+  await getLeaderboard(); // ensure raw cache is populated
+  const players = rawLeaderboardCache.data ?? [];
   const words = name.toLowerCase().split(/\s+/).filter(Boolean);
   return players.find(p => words.every(w => p.name.toLowerCase().includes(w))) || null;
 }

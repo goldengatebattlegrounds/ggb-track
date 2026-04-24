@@ -4,7 +4,7 @@ const { buildTop8Embed } = require('../embeds');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('leaderboard')
+    .setName('ggb-leaderboard')
     .setDescription('Show the current GGB Season top 8'),
 
   async execute(interaction) {

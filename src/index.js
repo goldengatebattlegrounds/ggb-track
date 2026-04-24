@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const ggbCommand         = require('./commands/ggb');
-const leaderboardCommand = require('./commands/leaderboard');
+const ggbCommand         = require('./commands/ggb-player');
+const leaderboardCommand = require('./commands/ggb-leaderboard');
 const { startScheduler } = require('./scheduler');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });

@@ -4,7 +4,7 @@ const { buildProfileEmbed } = require('../embeds');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('ggb')
+    .setName('ggb-player')
     .setDescription('Look up a player on the GGB leaderboard')
     .addStringOption(opt =>
       opt.setName('name').setDescription('Player name to search for').setRequired(true)
@@ -34,7 +34,7 @@ module.exports = {
       const embed = buildProfileEmbed(leaderboardPlayer, profile, allPlayers, season);
       await interaction.editReply({ embeds: [embed] });
     } catch (err) {
-      console.error('[/ggb] Error:', err);
+      console.error('[/ggb-player] Error:', err);
       await interaction.editReply('⚠️ Failed to fetch leaderboard data. Please try again in a moment.');
     }
   },
